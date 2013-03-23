@@ -43,7 +43,7 @@
 #include "vfolder-common.h"
 #include "vfolder-util.h"
 
-#define DOT_GNOME ".mate"
+#define DOT_MATE ".mate"
 
 typedef enum {
 	ITEM_DIR = 1,
@@ -1749,7 +1749,7 @@ vfolder_info_find_filenames (VFolderInfo *info)
 		 */
 		g_free (info->filename);
 		info->filename = g_strconcat (g_get_home_dir (),
-					      "/" DOT_GNOME "/vfolders/",
+					      "/" DOT_MATE "/vfolders/",
 					      scheme, ".vfolder-info",
 					      NULL);
 	}
@@ -1834,7 +1834,7 @@ vfolder_info_init (VFolderInfo *info)
 	 * source.
 	 */
 	info->write_dir = g_strconcat (g_get_home_dir (),
-				       "/" DOT_GNOME "/vfolders/",
+				       "/" DOT_MATE "/vfolders/",
 				       info->scheme,
 				       NULL);
 
