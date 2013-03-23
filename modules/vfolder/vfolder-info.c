@@ -1756,7 +1756,7 @@ vfolder_info_find_filenames (VFolderInfo *info)
 
 	/* 
 	 * Special case for applications-all-users where we want to add any
-	 * paths specified in $GNOME2_PATH, for people installing in strange
+	 * paths specified in $MATE_PATH, for people installing in strange
 	 * places.
 	 */
 	if (!strcmp (scheme, "applications-all-users")) {
@@ -1766,7 +1766,7 @@ vfolder_info_find_filenames (VFolderInfo *info)
 		ItemDir *id;
 		int weight = 800;
 
-		path = g_getenv ("GNOME2_PATH");
+		path = g_getenv ("MATE_PATH");
 		if (path) {
 			ppath = g_strsplit (path, ":", -1);
 
