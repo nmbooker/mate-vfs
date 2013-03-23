@@ -11,11 +11,11 @@ check_dir_exists (gchar *file_uri)
 	MateVFSDirectoryHandle *handle;
 	MateVFSResult result;
 
-	result = gnome_vfs_directory_open (&handle,
+	result = mate_vfs_directory_open (&handle,
 					   file_uri,
 					   MATE_VFS_FILE_INFO_DEFAULT);
 	if (result == MATE_VFS_OK) {
-		gnome_vfs_directory_close (handle);
+		mate_vfs_directory_close (handle);
 		return TRUE;
 	} else 
 		return FALSE;
@@ -29,7 +29,7 @@ check_dir_count (gchar *file_uri)
 	GList *files;
 	gint retval;
 
-	result = gnome_vfs_directory_list_load (&files,
+	result = mate_vfs_directory_list_load (&files,
 						file_uri,
 						MATE_VFS_FILE_INFO_DEFAULT);
 	if (result != MATE_VFS_OK)
@@ -37,7 +37,7 @@ check_dir_count (gchar *file_uri)
 
 	retval = g_list_length (files);
 
-	gnome_vfs_file_info_list_free (files);
+	mate_vfs_file_info_list_free (files);
 
 	return retval;
 }
@@ -49,11 +49,11 @@ check_file_exists (gchar *file_uri)
 	MateVFSHandle *handle;
 	MateVFSResult result;
 
-	result = gnome_vfs_open (&handle,
+	result = mate_vfs_open (&handle,
 				 file_uri,
 				 MATE_VFS_OPEN_READ);
 	if (result == MATE_VFS_OK) {
-		gnome_vfs_close (handle);
+		mate_vfs_close (handle);
 		return TRUE;
 	} else 
 		return FALSE;
@@ -70,14 +70,14 @@ check_file_content (gchar *file_uri, gchar *content)
 
 	len = strlen (content);
 
-	result = gnome_vfs_open (&handle,
+	result = mate_vfs_open (&handle,
 				 file_uri,
 				 MATE_VFS_OPEN_READ);
 	if (result != MATE_VFS_OK)
 		return FALSE;
 
 	while (idx < len) {
-		result = gnome_vfs_read (handle, 
+		result = mate_vfs_read (handle, 
 					 readbuf, 
 					 sizeof (readbuf),
 					 &readlen);
@@ -94,18 +94,18 @@ check_file_content (gchar *file_uri, gchar *content)
 			goto ERROR;
 	}
 	
-	gnome_vfs_close (handle);
+	mate_vfs_close (handle);
 	return TRUE;
 
  ERROR:
-	gnome_vfs_close (handle);
+	mate_vfs_close (handle);
 	return FALSE;
 }
 
 #define TEST_FAILURE(errstr)                                   \
 	do {                                                   \
 		g_print (" " errstr ": %s\n",                  \
-			 gnome_vfs_result_to_string (result)); \
+			 mate_vfs_result_to_string (result)); \
 	        return 1;                                      \
 	} while (0)
 
@@ -126,7 +126,7 @@ test_vfolder_ops (void)
 
 	uri = "test-vfolder:///";
 	g_print ("Opening %s...\n", uri);
-	result = gnome_vfs_directory_open (&dhandle,
+	result = mate_vfs_directory_open (&dhandle,
 					   uri,
 					   MATE_VFS_FILE_INFO_DEFAULT);
 	TEST_RESULT (result != MATE_VFS_OK, "ERROR OPENNING");
@@ -142,14 +142,14 @@ test_vfolder_ops (void)
 	/* Simple directory create */
 	uri = "test-vfolder:///MyTestFolder1";
 	g_print ("Creating new directory...");
-	result = gnome_vfs_make_directory (uri, MATE_VFS_PERM_USER_ALL);
+	result = mate_vfs_make_directory (uri, MATE_VFS_PERM_USER_ALL);
 	TEST_RESULT (result != MATE_VFS_OK || !check_dir_exists (uri),
 		     "ERROR CREATING DIR");
 
 	/* Simple directory delete */
 	uri = "test-vfolder:///MyTestFolder1";
 	g_print ("Deleting new empty directory...");
-	result = gnome_vfs_remove_directory (uri);
+	result = mate_vfs_remove_directory (uri);
 	TEST_RESULT (result != MATE_VFS_OK || check_dir_exists (uri),
 		     "ERROR DELETING DIR");
 
@@ -163,14 +163,14 @@ test_vfolder_ops (void)
 	/* Simple Create 2 */
 	uri = "test-vfolder:///MyTestFolder2/";
 	g_print ("Creating new directory...");
-	result = gnome_vfs_make_directory (uri, MATE_VFS_PERM_USER_ALL);
+	result = mate_vfs_make_directory (uri, MATE_VFS_PERM_USER_ALL);
 	TEST_RESULT (result != MATE_VFS_OK || !check_dir_exists (uri),
 		     "ERROR CREATING DIR");
 
 	/* Create Empty File */
 	uri = "test-vfolder:///MyTestFolder2/a_fake_file.desktop";
 	g_print ("Creating new file...");
-	result = gnome_vfs_create (&handle, 
+	result = mate_vfs_create (&handle, 
 				   uri, 
 				   MATE_VFS_OPEN_READ | MATE_VFS_OPEN_WRITE, 
 				   FALSE,
@@ -183,7 +183,7 @@ test_vfolder_ops (void)
 	/* Try removing dir (should fail) */
 	uri = "test-vfolder:///MyTestFolder2";
 	g_print ("Deleting new non-empty directory...");
-	result = gnome_vfs_remove_directory (uri);
+	result = mate_vfs_remove_directory (uri);
 	TEST_RESULT (result != MATE_VFS_ERROR_DIRECTORY_NOT_EMPTY || 
 		     !check_dir_exists (uri),
 		     "ERROR DELETING DIR");
@@ -191,14 +191,14 @@ test_vfolder_ops (void)
 	/* Delete file */
 	uri = "test-vfolder:///MyTestFolder2/a_fake_file.desktop";
 	g_print ("Deleting new file...");
-	result = gnome_vfs_unlink (uri);
+	result = mate_vfs_unlink (uri);
 	TEST_RESULT (result != MATE_VFS_OK || check_file_exists (uri),
 		     "ERROR DELETING FILE");
 
 	/* Try removing dir */
 	uri = "test-vfolder:///MyTestFolder2/";
 	g_print ("Deleting new empty directory...");
-	result = gnome_vfs_remove_directory (uri);
+	result = mate_vfs_remove_directory (uri);
 	TEST_RESULT (result != MATE_VFS_OK || check_dir_exists (uri),
 		     "ERROR DELETING DIR");
 
@@ -212,14 +212,14 @@ test_vfolder_ops (void)
 	uri = "test-vfolder:///EmptyFolder";
 	if (check_dir_exists (uri)) {
 		g_print ("Creating existing empty directory...");
-		result = gnome_vfs_make_directory (uri, 
+		result = mate_vfs_make_directory (uri, 
 						   MATE_VFS_PERM_USER_ALL);
 		TEST_RESULT (result != MATE_VFS_ERROR_FILE_EXISTS,
 			     "ABLE TO CREATE EXISTING DIR");
 
 		/* Try to delete existing empty dir */
 		g_print ("Deleting existing empty directory...");
-		result = gnome_vfs_remove_directory (uri);
+		result = mate_vfs_remove_directory (uri);
 		TEST_RESULT (result != MATE_VFS_OK || check_dir_exists (uri),
 			     "ERROR DELETING DIR");
 	}
@@ -240,14 +240,14 @@ test_vfolder_ops (void)
 	/* Try to delete existing empty hidden dir (should fail) */
 	uri = "test-vfolder:///EmptyHiddenFolder";
 	g_print ("Deleting existing empty hidden directory...");
-	result = gnome_vfs_remove_directory (uri);
+	result = mate_vfs_remove_directory (uri);
 	TEST_RESULT (result == MATE_VFS_OK || check_dir_exists (uri),
 		     "ABLE TO DELETE HIDDEN DIR");
 
 	/* Try to add file to existing empty hidden dir (should fail) */
 	uri = "test-vfolder:///EmptyHiddenFolder/a_fake_file.desktop";
 	g_print ("Creating file in existing empty hidden directory...");
-	result = gnome_vfs_create (&handle, 
+	result = mate_vfs_create (&handle, 
 				   uri, 
 				   MATE_VFS_OPEN_WRITE, 
 				   FALSE,
@@ -258,14 +258,14 @@ test_vfolder_ops (void)
 	/* Try to create existing empty hidden dir */
 	uri = "test-vfolder:///EmptyHiddenFolder";
 	g_print ("Deleting existing empty hidden directory...");
-	result = gnome_vfs_make_directory (uri, MATE_VFS_PERM_USER_ALL);
+	result = mate_vfs_make_directory (uri, MATE_VFS_PERM_USER_ALL);
 	TEST_RESULT (result != MATE_VFS_OK || !check_dir_exists (uri),
 		     "ERROR OVERRIDING HIDDEN DIR");
 
 	/* Try to add file to existing empty (now) non-hidden dir */
 	uri = "test-vfolder:///EmptyHiddenFolder/a_fake_file.desktop";
 	g_print ("Creating file in existing empty hidden directory...");
-	result = gnome_vfs_create (&handle, 
+	result = mate_vfs_create (&handle, 
 				   uri, 
 				   MATE_VFS_OPEN_WRITE, 
 				   FALSE,
@@ -276,21 +276,21 @@ test_vfolder_ops (void)
 	/* Try to delete existing empty hidden dir */
 	uri = "test-vfolder:///EmptyHiddenFolder";
 	g_print ("Deleting existing empty hidden directory...");
-	result = gnome_vfs_remove_directory (uri);
+	result = mate_vfs_remove_directory (uri);
 	TEST_RESULT (result == MATE_VFS_OK || !check_dir_exists (uri),
 		     "ABLE TO DELETE NON-EMPTY FOLDER");
 
 	/* Try to delete the file we created */
 	uri = "test-vfolder:///EmptyHiddenFolder/a_fake_file.desktop";
 	g_print ("Deleting created file...");
-	result = gnome_vfs_unlink (uri);
+	result = mate_vfs_unlink (uri);
 	TEST_RESULT (result != MATE_VFS_OK || check_file_exists (uri),
 		     "ERROR DELETING FILE");
 
 	/* Try to delete the directory */
 	uri = "test-vfolder:///EmptyHiddenFolder";
 	g_print ("Deleting overridden directory...");
-	result = gnome_vfs_remove_directory (uri);
+	result = mate_vfs_remove_directory (uri);
 	TEST_RESULT (result != MATE_VFS_OK || check_dir_exists (uri),
 		     "ERROR DELETING DIR");
 
@@ -307,7 +307,7 @@ test_vfolder_ops (void)
 				    "my_keyworded_file.desktop",
 				    NULL);
 	g_print ("Creating file in writedir to check keyword inclusion...");
-	result = gnome_vfs_create (&handle, 
+	result = mate_vfs_create (&handle, 
 				   realuri, 
 				   MATE_VFS_OPEN_WRITE, 
 				   FALSE,
@@ -316,14 +316,14 @@ test_vfolder_ops (void)
 
 	content = "Categories=FakeCategory1;FakeCategory2;FakeCategory3\n\n";
 	g_print ("Writing content...");
-	result = gnome_vfs_write (handle,
+	result = mate_vfs_write (handle,
 				  content,
 				  strlen (content),
 				  &writelen);
 	TEST_RESULT (result != MATE_VFS_OK, "ERROR WRITING FILE IN WRITEDIR");
 
 	g_print ("Closing file...");
-	result = gnome_vfs_close (handle);
+	result = mate_vfs_close (handle);
 	TEST_RESULT (result != MATE_VFS_OK, "ERROR CLOSING FILE");
 
 	uri = "test-vfolder:///KeywordFolder/my_keyworded_file.desktop";
@@ -342,7 +342,7 @@ test_vfolder_ops (void)
 		     "KEYWORDED FILE NOT PRESENT IN HIDDEN DIRECTORY");
 
 	g_print ("Deleting new file from writedir...");
-	result = gnome_vfs_unlink (realuri);
+	result = mate_vfs_unlink (realuri);
 	TEST_RESULT (result != MATE_VFS_OK || !check_file_exists (realuri),
 		     "ERROR DELETING FILE");
 
@@ -365,13 +365,13 @@ test_vfolder_ops (void)
 	 */
 	uri = "test-vfolder:///MyTestFolder1";
 	g_print ("Creating src directory...");
-	result = gnome_vfs_make_directory (uri, MATE_VFS_PERM_USER_ALL);
+	result = mate_vfs_make_directory (uri, MATE_VFS_PERM_USER_ALL);
 	TEST_RESULT (result != MATE_VFS_OK || !check_dir_exists (uri),
 		     "ERROR CREATING DIR");
 
 	uri = "test-vfolder:///MyTestFolder1/a_fake_file.desktop";
 	g_print ("Creating src file...");
-	result = gnome_vfs_create (&handle, 
+	result = mate_vfs_create (&handle, 
 				   uri, 
 				   MATE_VFS_OPEN_WRITE, 
 				   FALSE,
@@ -381,12 +381,12 @@ test_vfolder_ops (void)
 
 	uri = "test-vfolder:///MyTestFolder2";
 	g_print ("Creating dest directory...");
-	result = gnome_vfs_make_directory (uri, MATE_VFS_PERM_USER_ALL);
+	result = mate_vfs_make_directory (uri, MATE_VFS_PERM_USER_ALL);
 	TEST_RESULT (result != MATE_VFS_OK || !check_dir_exists (uri),
 		     "ERROR CREATING DIR");
 	
 	g_print ("Moving dir...");
-	result = gnome_vfs_move ("test-vfolder:///MyTestFolder1",
+	result = mate_vfs_move ("test-vfolder:///MyTestFolder1",
 				 "test-vfolder:///MyTestFolder2/MyButt",
 				 TRUE);
 	TEST_RESULT (result != MATE_VFS_OK || 
@@ -395,7 +395,7 @@ test_vfolder_ops (void)
 		     "ERROR MOVING DIR");
 
 	g_print ("Moving file...");
-	result = gnome_vfs_move ("test-vfolder:///MyTestFolder2/MyButt/a_fake_file.desktop",
+	result = mate_vfs_move ("test-vfolder:///MyTestFolder2/MyButt/a_fake_file.desktop",
 				 "test-vfolder:///MyTestFolder2",
 				 TRUE);
 	TEST_RESULT (result != MATE_VFS_OK || 
@@ -405,7 +405,7 @@ test_vfolder_ops (void)
 
 	uri = "test-vfolder:///MyTestFolder2/a_fake_file.desktop";
 	g_print ("Deleting dest file...");
-	result = gnome_vfs_unlink (uri);
+	result = mate_vfs_unlink (uri);
 	TEST_RESULT (result != MATE_VFS_OK || check_file_exists (uri),
 		     "ERROR DELETING FILE");
 
@@ -413,13 +413,13 @@ test_vfolder_ops (void)
 	/*
 	uri = "test-vfolder:///MyTestFolder1";
 	g_print ("Deleting src directory...");
-	result = gnome_vfs_remove_directory (uri);
+	result = mate_vfs_remove_directory (uri);
 	TEST_RESULT (result != MATE_VFS_OK || check_dir_exists (uri),
 		     "ERROR DELETING DIR");
 
 	uri = "test-vfolder:///MyTestFolder2";
 	g_print ("Deleting dest directory...");
-	result = gnome_vfs_remove_directory (uri);
+	result = mate_vfs_remove_directory (uri);
 	TEST_RESULT (result != MATE_VFS_OK || check_dir_exists (uri),
 		     "ERROR DELETING DIR");
 	*/
@@ -430,7 +430,7 @@ test_vfolder_ops (void)
 	 */
 	uri = "test-vfolder:///MyTestFolder1/a_file_to_rename.desktop";
 	g_print ("Creating file...");
-	result = gnome_vfs_create (&handle, 
+	result = mate_vfs_create (&handle, 
 				   uri, 
 				   MATE_VFS_OPEN_WRITE, 
 				   FALSE,
@@ -445,7 +445,7 @@ test_vfolder_ops (void)
 		info.name = "a_renamed_file.desktop";
 
 		g_print ("Renaming file...");
-		result = gnome_vfs_set_file_info (uri,
+		result = mate_vfs_set_file_info (uri,
 						  &info,
 						  MATE_VFS_SET_FILE_INFO_NAME);
 		desturi = 
@@ -509,7 +509,7 @@ main (int argc, char **argv)
 	putenv (g_strconcat ("MATE_VFS_VFOLDER_WRITEDIR=", path, NULL));
 	g_free (path);
 
-	gnome_vfs_init ();
+	mate_vfs_init ();
 
 	if (argc > 1)
 		iterations = atoi (argv [1]);
@@ -517,13 +517,13 @@ main (int argc, char **argv)
 	do {
 		if (test_vfolder_ops () != 0) {
 			g_print ("\nFAILURE!!\n");
-			gnome_vfs_shutdown ();
+			mate_vfs_shutdown ();
 			return 1;
 		}
 		g_print ("\n\n");
 	} while (--iterations);
 
-	gnome_vfs_shutdown ();
+	mate_vfs_shutdown ();
 
 	g_print ("\nSUCCESS!\n");
 	
