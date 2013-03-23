@@ -14,9 +14,9 @@ X filename uniqueness mess... need use a unique name when writing user-private
 X all-applications doesn't work.  probably need to use the pool files from
 .vfolder-info, and add an all-applications-all-users (ick) method.
 
-X ensure ~/.gnome2/vfolders exists before writing config file
+X ensure ~/.mate/vfolders exists before writing config file
 
-X ensure ~/.gnome2/vfolders/<scheme>/ dir exists before writing user-private
+X ensure ~/.mate/vfolders/<scheme>/ dir exists before writing user-private
   changes
 
 X <OnlyUnallocated> dir files list duplicates of regularly listed entries,

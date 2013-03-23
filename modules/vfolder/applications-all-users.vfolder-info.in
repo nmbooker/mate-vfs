@@ -9,14 +9,14 @@
   <ItemDir>/usr/share/applications/</ItemDir>
 
   <!-- Default .directory location -->
-  <DesktopDir>@datadir@/gnome/vfolders/</DesktopDir>
+  <DesktopDir>@datadir@/mate/vfolders/</DesktopDir>
 
   <!-- Add Ximian Menu Entries, uncomment for menu nirvana -->
-  <MergeDir>/usr/share/gnome/ximian/Programs/</MergeDir>
+  <MergeDir>/usr/share/mate/ximian/Programs/</MergeDir>
 
   <!-- Merge in the GNOME1 menus if you build into a non-default prefix -->
-  <MergeDir>@datadir@/gnome/apps/</MergeDir>
-  <MergeDir>/usr/share/gnome/apps/</MergeDir>
+  <MergeDir>@datadir@/mate/apps/</MergeDir>
+  <MergeDir>/usr/share/mate/apps/</MergeDir>
 
   <!-- Merge dirs optional -->
   <MergeDir>/etc/X11/applnk/</MergeDir>
@@ -26,10 +26,10 @@
     <Name>Applications</Name>
     <Desktop>Applications.directory</Desktop>
 
-    <Exclude>gnome-search-tool.desktop</Exclude>
+    <Exclude>mate-search-tool.desktop</Exclude>
     <Exclude>Gmc.desktop</Exclude>
     <Exclude>nautilus-help.desktop</Exclude>
-    <Exclude>gnome-help.desktop</Exclude>
+    <Exclude>mate-help.desktop</Exclude>
 
     <Query>
       <And>
@@ -89,8 +89,8 @@
       
       <Exclude>vumeter.desktop</Exclude>
       <Exclude>reclevel.desktop</Exclude>
-      <Exclude>gnome-search-tool.desktop</Exclude>
-      <Exclude>gnomecc.desktop</Exclude>
+      <Exclude>mate-search-tool.desktop</Exclude>
+      <Exclude>matecc.desktop</Exclude>
 
       <DontShowIfEmpty/>
     </Folder>

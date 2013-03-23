@@ -1,10 +1,10 @@
 <VFolderInfo>
   <!-- Merge dirs optional -->
-  <WriteDir>~/.gnome2/vfolders/network/</WriteDir>
+  <WriteDir>~/.mate/vfolders/network/</WriteDir>
 
   <!-- Root folder -->
   <Folder>
-    <Parent>@datadir@/gnome/network/</Parent>
+    <Parent>@datadir@/mate/network/</Parent>
     <Name>Network Shares</Name>
     <Query>
       <Not>

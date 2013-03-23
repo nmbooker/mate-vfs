@@ -43,7 +43,7 @@
 #include "vfolder-common.h"
 #include "vfolder-util.h"
 
-#define DOT_GNOME ".gnome2"
+#define DOT_GNOME ".mate"
 
 typedef enum {
 	ITEM_DIR = 1,
@@ -65,7 +65,7 @@ typedef struct {
  *   <!-- Only specify if it should override standard location -->
  *   <ItemDir>/usr/share/applications</ItemDir>
  *   <!-- This is where the .directories are -->
- *   <DesktopDir>/etc/X11/gnome/vfolders</DesktopDir>
+ *   <DesktopDir>/etc/X11/mate/vfolders</DesktopDir>
  *   <!-- Root folder -->
  *   <Folder>
  *     <Name>Root</Name>
@@ -1745,7 +1745,7 @@ vfolder_info_find_filenames (VFolderInfo *info)
 
 	if (!exists) {
 		/* 
-		 * 2nd: Try user-private ~/.gnome2/vfolders/scheme.vfolder-info 
+		 * 2nd: Try user-private ~/.mate/vfolders/scheme.vfolder-info 
 		 */
 		g_free (info->filename);
 		info->filename = g_strconcat (g_get_home_dir (),

@@ -6,10 +6,10 @@
   <ItemDir>@datadir@/control-center-2.0/capplets/</ItemDir>
 
   <!-- Merge dirs optional -->
-  <MergeDir>@datadir@/gnome/apps/Settings</MergeDir>
-  <MergeDir>@datadir@/gnome/capplets</MergeDir>
+  <MergeDir>@datadir@/mate/apps/Settings</MergeDir>
+  <MergeDir>@datadir@/mate/capplets</MergeDir>
 
-  <DesktopDir>@datadir@/gnome/vfolders</DesktopDir>
+  <DesktopDir>@datadir@/mate/vfolders</DesktopDir>
 
   <!-- Settings -->
   <Folder>
@@ -31,7 +31,7 @@
       </And>
     </Query>
     
-    <Exclude>gnomecc.desktop</Exclude>
+    <Exclude>matecc.desktop</Exclude>
     
     <Folder>
       <Name>Advanced</Name>
