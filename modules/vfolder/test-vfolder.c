@@ -498,8 +498,8 @@ main (int argc, char **argv)
 	gint iterations = 10;
 	gchar *cwd, cwdbuf [2048], *path;
 
-	putenv ("MATE_VFS_MODULE_PATH=" MATE_VFS_MODULE_PATH);
-	putenv ("MATE_VFS_MODULE_CONFIG_PATH=" MATE_VFS_MODULE_CONFIG_PATH);
+	putenv ("MATE_VFS_MODULE_PATH=", MATE_VFS_MODULE_PATH);
+	putenv ("MATE_VFS_MODULE_CONFIG_PATH=", MATE_VFS_MODULE_CONFIG_PATH);
 
 	cwd = getcwd (cwdbuf, sizeof (cwdbuf));
 
