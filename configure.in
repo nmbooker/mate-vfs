@@ -1334,6 +1334,7 @@ imported/Makefile
 imported/fnmatch/Makefile
 imported/neon/Makefile
 modules/Makefile
+modules/vfolder/Makefile
 daemon/Makefile
 schemas/Makefile
 devel-docs/Makefile

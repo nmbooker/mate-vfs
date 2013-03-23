@@ -1,5 +1,7 @@
 NULL =
 
+SUBDIRS = vfolder
+
 INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
