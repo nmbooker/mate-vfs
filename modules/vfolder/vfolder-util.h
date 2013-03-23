@@ -52,7 +52,7 @@ gboolean vfolder_uri_parse_internal (MateVFSURI *uri, VFolderURI *vuri);
 
 #define VFOLDER_URI_PARSE(_uri, _vuri) {                                    \
 	gchar *path;                                                        \
-	path = gnome_vfs_unescape_string ((_uri)->text, G_DIR_SEPARATOR_S); \
+	path = mate_vfs_unescape_string ((_uri)->text, G_DIR_SEPARATOR_S); \
 	if (path != NULL) {                                                 \
 		(_vuri)->path = g_alloca (strlen (path) + 1);               \
 		strcpy ((_vuri)->path, path);                               \

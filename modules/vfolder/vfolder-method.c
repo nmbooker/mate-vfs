@@ -158,11 +158,11 @@ do_open (MateVFSMethod *method,
 	}
 
 	file_uri = entry_get_real_uri (child.entry);
-	result = gnome_vfs_open_uri_cancellable (&file_handle,
+	result = mate_vfs_open_uri_cancellable (&file_handle,
 						 file_uri,
 						 mode,
 						 context);
-	gnome_vfs_uri_unref (file_uri);
+	mate_vfs_uri_unref (file_uri);
 
 	if (result == MATE_VFS_ERROR_CANCELLED) {
 		NICE_UNLOCK_INFO (info, want_write);
@@ -274,14 +274,14 @@ do_create (MateVFSMethod *method,
 		return result;
 	}
 
-	file_uri = gnome_vfs_uri_new (filename);
-	result = gnome_vfs_create_uri_cancellable (&file_handle,
+	file_uri = mate_vfs_uri_new (filename);
+	result = mate_vfs_create_uri_cancellable (&file_handle,
 						   file_uri,
 						   mode,
 						   exclusive,
 						   perm,
 						   context);
-	gnome_vfs_uri_unref (file_uri);
+	mate_vfs_uri_unref (file_uri);
 
 	if (result != MATE_VFS_OK) {
 		VFOLDER_INFO_WRITE_UNLOCK (info);
@@ -334,7 +334,7 @@ do_close (MateVFSMethod *method,
 	if (method_handle == (MateVFSMethodHandle *) method)
 		return MATE_VFS_OK;
 	
-	result = gnome_vfs_close_cancellable (handle->handle, context);
+	result = mate_vfs_close_cancellable (handle->handle, context);
 
 	if (handle->write) {
 		VFOLDER_INFO_WRITE_LOCK (handle->info);
@@ -359,7 +359,7 @@ do_read (MateVFSMethod *method,
 	MateVFSResult result;
 	FileHandle *handle = (FileHandle *)method_handle;
 	
-	result = gnome_vfs_read_cancellable (handle->handle,
+	result = mate_vfs_read_cancellable (handle->handle,
 					     buffer, num_bytes,
 					     bytes_read,
 					     context);
@@ -379,7 +379,7 @@ do_write (MateVFSMethod *method,
 	MateVFSResult result;
 	FileHandle *handle = (FileHandle *)method_handle;
 
-	result = gnome_vfs_write_cancellable (handle->handle,
+	result = mate_vfs_write_cancellable (handle->handle,
 					      buffer, num_bytes,
 					      bytes_written,
 					      context);
@@ -398,7 +398,7 @@ do_seek (MateVFSMethod *method,
 	MateVFSResult result;
 	FileHandle *handle = (FileHandle *)method_handle;
 	
-	result = gnome_vfs_seek_cancellable (handle->handle,
+	result = mate_vfs_seek_cancellable (handle->handle,
 					     whence, offset,
 					     context);
 
@@ -414,7 +414,7 @@ do_tell (MateVFSMethod *method,
 	MateVFSResult result;
 	FileHandle *handle = (FileHandle *)method_handle;
 	
-	result = gnome_vfs_tell (handle->handle, offset_return);
+	result = mate_vfs_tell (handle->handle, offset_return);
 
 	return result;
 }
@@ -429,7 +429,7 @@ do_truncate_handle (MateVFSMethod *method,
 	MateVFSResult result;
 	FileHandle *handle = (FileHandle *)method_handle;
 	
-	result = gnome_vfs_truncate_handle_cancellable (handle->handle,
+	result = mate_vfs_truncate_handle_cancellable (handle->handle,
 							where,
 							context);
 
@@ -490,8 +490,8 @@ do_truncate (MateVFSMethod *method,
 	
 	VFOLDER_INFO_WRITE_UNLOCK (info);
 
-	result = gnome_vfs_truncate_uri_cancellable (file_uri, where, context);
-	gnome_vfs_uri_unref (file_uri);
+	result = mate_vfs_truncate_uri_cancellable (file_uri, where, context);
+	mate_vfs_uri_unref (file_uri);
 
 	return result;
 }
@@ -702,11 +702,11 @@ get_file_info_internal (VFolderInfo             *info,
 		file_uri = entry_get_real_uri (child->entry);
 		displayname = g_strdup (entry_get_displayname (child->entry));
 
-		result = gnome_vfs_get_file_info_uri_cancellable (file_uri,
+		result = mate_vfs_get_file_info_uri_cancellable (file_uri,
 								  file_info,
 								  options,
 								  context);
-		gnome_vfs_uri_unref (file_uri);
+		mate_vfs_uri_unref (file_uri);
 
 		g_free (file_info->name);
 		file_info->name = displayname;
@@ -958,17 +958,17 @@ do_make_directory (MateVFSMethod *method,
 			MateVFSResult result;
 
 			extend_uri = folder_get_extend_uri (parent);
-			real_uri = gnome_vfs_uri_new (extend_uri);
-			new_uri = gnome_vfs_uri_append_file_name (real_uri, 
+			real_uri = mate_vfs_uri_new (extend_uri);
+			new_uri = mate_vfs_uri_append_file_name (real_uri, 
 								  vuri.file);
-			gnome_vfs_uri_unref (real_uri);
+			mate_vfs_uri_unref (real_uri);
 			
 			result = 
-				gnome_vfs_make_directory_for_uri_cancellable (
+				mate_vfs_make_directory_for_uri_cancellable (
 					new_uri,
 					perm,
 					context);
-			gnome_vfs_uri_unref (new_uri);
+			mate_vfs_uri_unref (new_uri);
 
 			if (result != MATE_VFS_OK) {
 				VFOLDER_INFO_WRITE_UNLOCK (info);
@@ -1026,15 +1026,15 @@ do_remove_directory_unlocked (VFolderInfo *info,
 		uristr = vfolder_build_uri (folder_get_extend_uri (folder),
 					    vuri->file,
 					    NULL);
-		new_uri = gnome_vfs_uri_new (uristr);
+		new_uri = mate_vfs_uri_new (uristr);
 		g_free (uristr);
 
 		/* Remove from the parent as well as in our .vfolder-info */
 		result = 
-			gnome_vfs_remove_directory_from_uri_cancellable (
+			mate_vfs_remove_directory_from_uri_cancellable (
 				new_uri,
 				context);
-		gnome_vfs_uri_unref (new_uri);
+		mate_vfs_uri_unref (new_uri);
 
 		if (result != MATE_VFS_OK)
 			return result;
@@ -1103,8 +1103,8 @@ do_unlink_unlocked (VFolderInfo *info,
 		
 		/* Delete our local copy, or the linked source */
 		uri = entry_get_real_uri (entry);
-		result = gnome_vfs_unlink_from_uri_cancellable (uri, context);
-		gnome_vfs_uri_unref (uri);
+		result = mate_vfs_unlink_from_uri_cancellable (uri, context);
+		mate_vfs_uri_unref (uri);
 
 		/* 
 		 * We only care about the result if its a linked directory.
@@ -1206,7 +1206,7 @@ set_desktop_file_locale_key (GString *fullbuf, gchar *key, gchar *value)
 	gchar *locale_key;
 
 	/* Get the list of applicable locales */
-	locale_list = gnome_vfs_i18n_get_language_list ("LC_MESSAGES");
+	locale_list = mate_vfs_i18n_get_language_list ("LC_MESSAGES");
 
 	/* Get the localized keyname from the first locale */
 	locale = locale_list ? locale_list->data : NULL;
@@ -1246,10 +1246,10 @@ set_dot_directory_locale_name (Folder *folder, gchar *val)
 		MATE_VFS_PERM_GROUP_READ | 
 		MATE_VFS_PERM_OTHER_READ);
 
-	if (gnome_vfs_open (&handle, 
+	if (mate_vfs_open (&handle, 
 			    entry_get_filename (dot_file), 
 			    mode) != MATE_VFS_OK &&
-	    gnome_vfs_create (&handle, 
+	    mate_vfs_create (&handle, 
 			      entry_get_filename (dot_file),
 			      mode,
 			      TRUE,
@@ -1258,7 +1258,7 @@ set_dot_directory_locale_name (Folder *folder, gchar *val)
 
 	/* read in the file contents to fullbuf */
 	fullbuf = g_string_new (NULL);
-	while (gnome_vfs_read (handle, 
+	while (mate_vfs_read (handle, 
 			       buf, 
 			       sizeof (buf), 
 			       &readlen) == MATE_VFS_OK) {
@@ -1269,19 +1269,19 @@ set_dot_directory_locale_name (Folder *folder, gchar *val)
 	set_desktop_file_locale_key (fullbuf, "Name", val);
 
 	/* clear it */
-	gnome_vfs_truncate_handle (handle, 0);
-	gnome_vfs_seek (handle, MATE_VFS_SEEK_START, 0);
+	mate_vfs_truncate_handle (handle, 0);
+	mate_vfs_seek (handle, MATE_VFS_SEEK_START, 0);
 
 	/* write the changed contents */
 	while (fullbuf->len - offset > 0 &&
-	       gnome_vfs_write (handle, 
+	       mate_vfs_write (handle, 
 				&fullbuf->str [offset],
 				fullbuf->len - offset, 
 				&writelen) == MATE_VFS_OK) {
 		offset += writelen;
 	}
 
-	gnome_vfs_close (handle);
+	mate_vfs_close (handle);
 	g_string_free (fullbuf, TRUE);
 }
 
@@ -1502,10 +1502,10 @@ do_set_file_info (MateVFSMethod *method,
 		MateVFSResult result = MATE_VFS_OK;
 		MateVFSURI *parent_uri, *new_uri;
 
-		parent_uri = gnome_vfs_uri_get_parent (uri);
-		new_uri = gnome_vfs_uri_append_file_name (parent_uri, 
+		parent_uri = mate_vfs_uri_get_parent (uri);
+		new_uri = mate_vfs_uri_append_file_name (parent_uri, 
 							  info->name);
-		gnome_vfs_uri_unref (parent_uri);
+		mate_vfs_uri_unref (parent_uri);
 
 		if (!new_uri)
 			return MATE_VFS_ERROR_INVALID_URI;
@@ -1516,7 +1516,7 @@ do_set_file_info (MateVFSMethod *method,
 				  FALSE /* force_replace */,
 				  context);
 
-		gnome_vfs_uri_unref (new_uri);	
+		mate_vfs_uri_unref (new_uri);	
 		return result;
 	} else {
 		/* 
@@ -1573,15 +1573,15 @@ do_create_symbolic_link (MateVFSMethod *method,
 		new_uristr = vfolder_build_uri (folder_get_extend_uri (parent),
 						vuri.file,
 						NULL);
-		new_uri = gnome_vfs_uri_new (new_uristr);
+		new_uri = mate_vfs_uri_new (new_uristr);
 		
 		result = 
-			gnome_vfs_create_symbolic_link_cancellable (
+			mate_vfs_create_symbolic_link_cancellable (
 				new_uri,
 				target_reference,
 				context);
 
-		gnome_vfs_uri_unref (new_uri);
+		mate_vfs_uri_unref (new_uri);
 
 		return result;
 	} else {
@@ -1601,15 +1601,15 @@ do_create_symbolic_link (MateVFSMethod *method,
 		 */
 		VFOLDER_INFO_WRITE_UNLOCK (info);
 
-		link_uri = gnome_vfs_uri_new (target_reference);
-		file_info = gnome_vfs_file_info_new ();
+		link_uri = mate_vfs_uri_new (target_reference);
+		file_info = mate_vfs_file_info_new ();
 		result = 
-			gnome_vfs_get_file_info_uri_cancellable (
+			mate_vfs_get_file_info_uri_cancellable (
 				link_uri,
 				file_info,
 				MATE_VFS_FILE_INFO_FOLLOW_LINKS, 
 				context);
-		gnome_vfs_uri_unref (link_uri);
+		mate_vfs_uri_unref (link_uri);
 
 		if (result != MATE_VFS_OK)
 			return MATE_VFS_ERROR_NOT_FOUND;
@@ -1656,7 +1656,7 @@ do_monitor_add (MateVFSMethod *method,
 {
 	VFolderInfo *info;
 
-	info = vfolder_info_locate (gnome_vfs_uri_get_scheme (uri));
+	info = vfolder_info_locate (mate_vfs_uri_get_scheme (uri));
 	if (!info)
 		return MATE_VFS_ERROR_INVALID_URI;
 

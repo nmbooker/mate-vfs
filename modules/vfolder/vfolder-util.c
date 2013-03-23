@@ -43,7 +43,7 @@
 gboolean
 vfolder_uri_parse_internal (MateVFSURI *uri, VFolderURI *vuri)
 {
-	vuri->scheme = (gchar *) gnome_vfs_uri_get_scheme (uri);
+	vuri->scheme = (gchar *) mate_vfs_uri_get_scheme (uri);
 
 	vuri->ends_in_slash = FALSE;
 
@@ -139,16 +139,16 @@ ctime_for_uri (const gchar *uri)
 	MateVFSResult result;
 	time_t ctime = 0;
 
-	info = gnome_vfs_file_info_new ();
+	info = mate_vfs_file_info_new ();
 	
-	result = gnome_vfs_get_file_info (uri,
+	result = mate_vfs_get_file_info (uri,
 					  info,
 					  MATE_VFS_FILE_INFO_DEFAULT);
 	if (result == MATE_VFS_OK) {
 		ctime = info->ctime;
 	}
 
-	gnome_vfs_file_info_unref (info);
+	mate_vfs_file_info_unref (info);
 
 	return ctime;
 }
@@ -212,11 +212,11 @@ monitor_start_internal (MateVFSMonitorType      type,
 	MateVFSFileInfo *info;
 
 	/* Check the file exists so we don't get a bogus DELETED event */
-	info = gnome_vfs_file_info_new ();
-	result = gnome_vfs_get_file_info (uri, 
+	info = mate_vfs_file_info_new ();
+	result = mate_vfs_get_file_info (uri, 
 					  info, 
 					  MATE_VFS_FILE_INFO_DEFAULT);
-	gnome_vfs_file_info_unref (info);
+	mate_vfs_file_info_unref (info);
 
 	if (result != MATE_VFS_OK)
 		return NULL;
@@ -227,7 +227,7 @@ monitor_start_internal (MateVFSMonitorType      type,
 	monitor->uri = g_strdup (uri);
 
 #ifndef VFOLDER_DEBUG_WITHOUT_MONITORING
-	result = gnome_vfs_monitor_add (&monitor->vfs_handle, 
+	result = mate_vfs_monitor_add (&monitor->vfs_handle, 
 					uri,
 					type,
 					monitor_callback_internal,
@@ -282,7 +282,7 @@ vfolder_monitor_freeze (VFolderMonitor *monitor)
 	monitor->frozen = TRUE;
 
 	if (monitor->vfs_handle) {
-		gnome_vfs_monitor_cancel (monitor->vfs_handle);
+		mate_vfs_monitor_cancel (monitor->vfs_handle);
 		monitor->vfs_handle = NULL;
 	}
 }
@@ -295,7 +295,7 @@ vfolder_monitor_thaw (VFolderMonitor *monitor)
 
 	monitor->frozen = FALSE;
 
-	if (gnome_vfs_monitor_add (&monitor->vfs_handle, 
+	if (mate_vfs_monitor_add (&monitor->vfs_handle, 
 				   monitor->uri,
 				   monitor->type,
 				   monitor_callback_internal,
@@ -307,7 +307,7 @@ void
 vfolder_monitor_cancel (VFolderMonitor *monitor)
 {
 	if (monitor->vfs_handle)
-		gnome_vfs_monitor_cancel (monitor->vfs_handle);
+		mate_vfs_monitor_cancel (monitor->vfs_handle);
 	else {
 		G_LOCK (stat_monitors);
 		stat_monitors = g_slist_remove (stat_monitors, monitor);
@@ -336,12 +336,12 @@ make_directory_and_parents_from_uri (MateVFSURI *uri, guint permissions)
 	 * Make the directory, and return right away unless there's
 	 * a possible problem with the parent.
 	 */
-	result = gnome_vfs_make_directory_for_uri (uri, permissions);
+	result = mate_vfs_make_directory_for_uri (uri, permissions);
 	if (result != MATE_VFS_ERROR_NOT_FOUND)
 		return result;
 
 	/* If we can't get a parent, we are done. */
-	parent_uri = gnome_vfs_uri_get_parent (uri);
+	parent_uri = mate_vfs_uri_get_parent (uri);
 	if (!parent_uri)
 		return result;
 
@@ -350,7 +350,7 @@ make_directory_and_parents_from_uri (MateVFSURI *uri, guint permissions)
 	 * the parent and its parents.
 	 */
 	result = make_directory_and_parents_from_uri (parent_uri, permissions);
-	gnome_vfs_uri_unref (parent_uri);
+	mate_vfs_uri_unref (parent_uri);
 	if (result != MATE_VFS_OK && result != MATE_VFS_ERROR_FILE_EXISTS)
 		return result;
 
@@ -358,7 +358,7 @@ make_directory_and_parents_from_uri (MateVFSURI *uri, guint permissions)
 	 * A second try at making the directory after the parents
 	 * have all been created.
 	 */
-	result = gnome_vfs_make_directory_for_uri (uri, permissions);
+	result = mate_vfs_make_directory_for_uri (uri, permissions);
 	return result;
 }
 
@@ -370,16 +370,16 @@ vfolder_make_directory_and_parents (const gchar *uri,
 	MateVFSURI *file_uri, *parent_uri;
 	MateVFSResult result;
 
-	file_uri = gnome_vfs_uri_new (uri);
+	file_uri = mate_vfs_uri_new (uri);
 
 	if (skip_filename) {
-		parent_uri = gnome_vfs_uri_get_parent (file_uri);
-		gnome_vfs_uri_unref (file_uri);
+		parent_uri = mate_vfs_uri_get_parent (file_uri);
+		mate_vfs_uri_unref (file_uri);
 		file_uri = parent_uri;
 	}
 
 	result = make_directory_and_parents_from_uri (file_uri, permissions);
-	gnome_vfs_uri_unref (file_uri);
+	mate_vfs_uri_unref (file_uri);
 
 	return result == MATE_VFS_ERROR_FILE_EXISTS ? MATE_VFS_OK : result;
 }

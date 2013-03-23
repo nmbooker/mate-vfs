@@ -361,14 +361,14 @@ vfolder_info_write_user (VFolderInfo *info)
 		vfolder_monitor_freeze (info->filename_monitor);
 
 	/* Move temp file over to real filename */
-	result = gnome_vfs_move (tmpfile, 
+	result = mate_vfs_move (tmpfile, 
 				 info->filename, 
 				 TRUE /*force_replace*/);
 	if (result != MATE_VFS_OK) {
 		g_warning ("Error writing vfolder configuration "
 			   "file \"%s\": %s.",
 			   info->filename,
-			   gnome_vfs_result_to_string (result));
+			   mate_vfs_result_to_string (result));
 	}
 
 	/* Start listening to changes again */
@@ -767,7 +767,7 @@ read_vfolder_from_file (VFolderInfo     *info,
 	}
 
 	if (context != NULL && 
-	    gnome_vfs_context_check_cancellation (context)) {
+	    mate_vfs_context_check_cancellation (context)) {
 		xmlFreeDoc(doc);
 		*result = MATE_VFS_ERROR_CANCELLED;
 		return FALSE;
@@ -781,7 +781,7 @@ read_vfolder_from_file (VFolderInfo     *info,
 			continue;
 
 		if (context != NULL && 
-		    gnome_vfs_context_check_cancellation (context)) {
+		    mate_vfs_context_check_cancellation (context)) {
 			xmlFreeDoc(doc);
 			*result = MATE_VFS_ERROR_CANCELLED;
 			return FALSE;
@@ -1075,7 +1075,7 @@ vfolder_info_read_info (VFolderInfo     *info,
 				id->monitors = g_slist_prepend (id->monitors, 
 								dir_monitor);
 
-			gnome_vfs_directory_visit (
+			mate_vfs_directory_visit (
 				id->uri,
 				MATE_VFS_FILE_INFO_DEFAULT,
 				MATE_VFS_DIRECTORY_VISIT_DEFAULT,
@@ -1216,7 +1216,7 @@ integrate_itemdir_entry_createupdate (ItemDir                  *id,
 	if (entry) {
 		real_uri = entry_get_real_uri (entry);
 
-		if (gnome_vfs_uri_equal (full_uri, real_uri)) {
+		if (mate_vfs_uri_equal (full_uri, real_uri)) {
 			/* Refresh */
 			entry_set_dirty (entry);
 		} 
@@ -1234,16 +1234,16 @@ integrate_itemdir_entry_createupdate (ItemDir                  *id,
 			}
 		}
 
-		gnome_vfs_uri_unref (real_uri);
+		mate_vfs_uri_unref (real_uri);
 	} 
 	else if (event_type == MATE_VFS_MONITOR_EVENT_CREATED) {
 		MateVFSFileInfo *file_info;
 		MateVFSResult result;
 
-		file_info = gnome_vfs_file_info_new ();
+		file_info = mate_vfs_file_info_new ();
 
 		result = 
-			gnome_vfs_get_file_info_uri (
+			mate_vfs_get_file_info_uri (
 				full_uri,
 				file_info,
 				MATE_VFS_FILE_INFO_DEFAULT);
@@ -1253,7 +1253,7 @@ integrate_itemdir_entry_createupdate (ItemDir                  *id,
 								 rel_path,
 								 file_info);
 		
-		gnome_vfs_file_info_unref (file_info);
+		mate_vfs_file_info_unref (file_info);
 	}
 
 	if (entry) {
@@ -1294,9 +1294,9 @@ find_replacement_for_delete (ItemDir *id, Entry *entry)
 					entry_get_displayname (entry),
 					NULL);
 
-			check_uri = gnome_vfs_uri_new (uristr);
-			exists = gnome_vfs_uri_exists (check_uri);
-			gnome_vfs_uri_unref (check_uri);
+			check_uri = mate_vfs_uri_new (uristr);
+			exists = mate_vfs_uri_exists (check_uri);
+			mate_vfs_uri_unref (check_uri);
 
 			if (!exists) {
 				g_free (uristr);
@@ -1336,8 +1336,8 @@ integrate_itemdir_entry_delete (ItemDir                  *id,
 		return;
 
 	real_uri = entry_get_real_uri (entry);
-	equal = gnome_vfs_uri_equal (full_uri, real_uri);
-	gnome_vfs_uri_unref (real_uri);
+	equal = mate_vfs_uri_equal (full_uri, real_uri);
+	mate_vfs_uri_unref (real_uri);
 
 	/* Only care if its the currently visible entry being deleted */
 	if (!equal)
@@ -1374,8 +1374,8 @@ itemdir_monitor_cb (MateVFSMonitorHandle    *handle,
 	    !vfolder_check_extension (info_uri, ".desktop"))
 		return;
 
-	uri = gnome_vfs_uri_new (info_uri);
-	filename = gnome_vfs_uri_extract_short_name (uri);
+	uri = mate_vfs_uri_new (info_uri);
+	filename = mate_vfs_uri_extract_short_name (uri);
 
 	switch (event_type) {
 	case MATE_VFS_MONITOR_EVENT_CREATED:
@@ -1397,7 +1397,7 @@ itemdir_monitor_cb (MateVFSMonitorHandle    *handle,
 		break;
 	}
 
-	gnome_vfs_uri_unref (uri);
+	mate_vfs_uri_unref (uri);
 	g_free (filename);
 }
 
@@ -1414,14 +1414,14 @@ integrate_writedir_entry_changed (Folder      *folder,
 	if (entry) {
 		real_uri = entry_get_real_uri (entry);
 
-		if (gnome_vfs_uri_equal (real_uri, changed_uri)) {
+		if (mate_vfs_uri_equal (real_uri, changed_uri)) {
 			entry_set_dirty (entry);
 			folder_emit_changed (folder, 
 					     displayname,
 					     MATE_VFS_MONITOR_EVENT_CHANGED);
 		}
 
-		gnome_vfs_uri_unref (real_uri);
+		mate_vfs_uri_unref (real_uri);
 	}
 
 	for (subs = folder_list_subfolders (folder); subs; subs = subs->next) {
@@ -1451,15 +1451,15 @@ writedir_monitor_cb (MateVFSMonitorHandle    *handle,
 
 	switch (event_type) {
 	case MATE_VFS_MONITOR_EVENT_CHANGED:
-		uri = gnome_vfs_uri_new (info_uri);
-		filename_ts = gnome_vfs_uri_extract_short_name (uri);
+		uri = mate_vfs_uri_new (info_uri);
+		filename_ts = mate_vfs_uri_extract_short_name (uri);
 		filename = vfolder_untimestamp_file_name (filename_ts);
 
 		VFOLDER_INFO_WRITE_LOCK (info);
 		integrate_writedir_entry_changed (info->root, filename, uri);
 		VFOLDER_INFO_WRITE_UNLOCK (info);
 
-		gnome_vfs_uri_unref (uri);
+		mate_vfs_uri_unref (uri);
 		g_free (filename_ts);
 		g_free (filename);
 		break;
@@ -1487,7 +1487,7 @@ desktopdir_monitor_cb (MateVFSMonitorHandle    *handle,
 
 	switch (event_type) {
 	case MATE_VFS_MONITOR_EVENT_CHANGED:
-		uri = gnome_vfs_uri_new (info_uri);
+		uri = mate_vfs_uri_new (info_uri);
 
 		VFOLDER_INFO_WRITE_LOCK (info);
 		integrate_writedir_entry_changed (info->root, 
@@ -1495,7 +1495,7 @@ desktopdir_monitor_cb (MateVFSMonitorHandle    *handle,
 						  uri);
 		VFOLDER_INFO_WRITE_UNLOCK (info);
 
-		gnome_vfs_uri_unref (uri);
+		mate_vfs_uri_unref (uri);
 		break;
 	case MATE_VFS_MONITOR_EVENT_DELETED:
 	case MATE_VFS_MONITOR_EVENT_CREATED:
@@ -1517,7 +1517,7 @@ check_monitors_foreach (gpointer key, gpointer val, gpointer user_data)
 	const gchar *path;
 
 	uri = handle->uri;
-	path = gnome_vfs_uri_get_path (handle->uri);
+	path = mate_vfs_uri_get_path (handle->uri);
 
 	if (handle->type == MATE_VFS_MONITOR_DIRECTORY) {
 		Folder *folder;
@@ -1525,7 +1525,7 @@ check_monitors_foreach (gpointer key, gpointer val, gpointer user_data)
 
 		folder = vfolder_info_get_folder (handle->info, path);
 		if (!folder) {
-			gnome_vfs_monitor_callback (
+			mate_vfs_monitor_callback (
 				(MateVFSMethodHandle *) handle,
 				handle->uri,
 				MATE_VFS_MONITOR_EVENT_DELETED);
@@ -1557,16 +1557,16 @@ check_monitors_foreach (gpointer key, gpointer val, gpointer user_data)
 							     found);
 			} else {
 				curi = 
-					gnome_vfs_uri_append_file_name (
+					mate_vfs_uri_append_file_name (
 						handle->uri, 
 						child_name);
 
-				gnome_vfs_monitor_callback (
+				mate_vfs_monitor_callback (
 					(MateVFSMethodHandle *) handle,
 					curi,
 				        MATE_VFS_MONITOR_EVENT_DELETED);
 
-				gnome_vfs_uri_unref (curi);
+				mate_vfs_uri_unref (curi);
 			}
 
 			g_free (child_name);
@@ -1576,15 +1576,15 @@ check_monitors_foreach (gpointer key, gpointer val, gpointer user_data)
 		for (iter = new_children; iter; iter = iter->next) {
 			gchar *child_name = iter->data;
 
-			curi = gnome_vfs_uri_append_file_name (handle->uri, 
+			curi = mate_vfs_uri_append_file_name (handle->uri, 
 							       child_name);
 
-			gnome_vfs_monitor_callback (
+			mate_vfs_monitor_callback (
 				(MateVFSMethodHandle *) handle,
 				curi,
 				MATE_VFS_MONITOR_EVENT_CREATED);
 
-			gnome_vfs_uri_unref (curi);
+			mate_vfs_uri_unref (curi);
 			g_free (child_name);
 		}
 
@@ -1597,7 +1597,7 @@ check_monitors_foreach (gpointer key, gpointer val, gpointer user_data)
 		found = vfolder_info_get_entry (handle->info, path) ||
 			vfolder_info_get_folder (handle->info, path);
 
-		gnome_vfs_monitor_callback (
+		mate_vfs_monitor_callback (
 			(MateVFSMethodHandle *) handle,
 			handle->uri,
 			found ?
@@ -1634,7 +1634,7 @@ filename_monitor_handle (gpointer user_data)
 			folder = 
 				vfolder_info_get_folder (
 					info, 
-					gnome_vfs_uri_get_path (mhandle->uri));
+					mate_vfs_uri_get_path (mhandle->uri));
 			if (folder)
 				monitored_paths = folder_list_children (folder);
 		}
@@ -1738,10 +1738,10 @@ vfolder_info_find_filenames (VFolderInfo *info)
 				      "/mate-vfs-2.0/vfolders/",
 				      scheme, ".vfolder-info",
 				      NULL);
-	file_uri = gnome_vfs_uri_new (info->filename);
+	file_uri = mate_vfs_uri_new (info->filename);
 
-	exists = gnome_vfs_uri_exists (file_uri);
-	gnome_vfs_uri_unref (file_uri);
+	exists = mate_vfs_uri_exists (file_uri);
+	mate_vfs_uri_unref (file_uri);
 
 	if (!exists) {
 		/* 
@@ -2109,28 +2109,28 @@ vfolder_info_emit_change (VFolderInfo              *info,
 	if (info->loading) 
 		return;
 
-	escpath = gnome_vfs_escape_path_string (path);
+	escpath = mate_vfs_escape_path_string (path);
 	uristr = g_strconcat (info->scheme, "://", escpath, NULL);
-	uri = gnome_vfs_uri_new (uristr);
+	uri = mate_vfs_uri_new (uristr);
 
 	for (iter = info->requested_monitors; iter; iter = iter->next) {
 		MonitorHandle *handle = iter->data;
 
-		if (gnome_vfs_uri_equal (uri, handle->uri) ||
+		if (mate_vfs_uri_equal (uri, handle->uri) ||
 		    (handle->type == MATE_VFS_MONITOR_DIRECTORY &&
-		     gnome_vfs_uri_is_parent (handle->uri, 
+		     mate_vfs_uri_is_parent (handle->uri, 
 					      uri, 
 					      FALSE))) {
 			DEBUG_CHANGE_EMIT (uristr, handle->uri->text);
 
-			gnome_vfs_monitor_callback (
+			mate_vfs_monitor_callback (
 				(MateVFSMethodHandle *) handle,
 				uri,
 				event_type);
 		}
 	}
 
-	gnome_vfs_uri_unref (uri);
+	mate_vfs_uri_unref (uri);
 	g_free (escpath);
 	g_free (uristr);
 }
@@ -2146,13 +2146,13 @@ vfolder_info_add_monitor (VFolderInfo           *info,
 	monitor->type = type;
 
 	monitor->uri = uri;
-	gnome_vfs_uri_ref (uri);
+	mate_vfs_uri_ref (uri);
 
 	info->requested_monitors = g_slist_prepend (info->requested_monitors,
 						    monitor);
 
 	D (g_print ("EXTERNALLY WATCHING: %s\n", 
-		    gnome_vfs_uri_to_string (uri, 0)));
+		    mate_vfs_uri_to_string (uri, 0)));
 	
 	*handle = (MateVFSMethodHandle *) monitor;
 }
@@ -2165,7 +2165,7 @@ vfolder_info_cancel_monitor (MateVFSMethodHandle  *handle)
 	monitor->info->requested_monitors = 
 		g_slist_remove (monitor->info->requested_monitors, monitor);
 
-	gnome_vfs_uri_unref (monitor->uri);
+	mate_vfs_uri_unref (monitor->uri);
 	g_free (monitor);
 }
 
