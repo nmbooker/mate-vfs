@@ -88,8 +88,8 @@ module_path = \
 	$(top_builddir)/modules/vfolder/.libs:$(top_builddir)/modules/.libs
 
 TESTS_INCLUDES = 							  \
-	-Dmate_VFS_MODULE_PATH=\"$(module_path)\" 			  \
-	-Dmate_VFS_MODULE_CONFIG_PATH=\"$(top_srcdir)/modules/vfolder\"
+	-DMATE_VFS_MODULE_PATH=\"$(module_path)\" 			  \
+	-DMATE_VFS_MODULE_CONFIG_PATH=\"$(top_srcdir)/modules/vfolder\"
 
 # TESTS = test-vfolder
 
